@@ -1,0 +1,30 @@
+{
+    "name": "adhocore/cron-expr",
+    "description": "Ultra lightweight Cron Expression parser for PHP",
+    "type": "library",
+    "keywords": [
+        "cron", "cron-expression", "cron-parser", "cron-expr"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jitendra Adhikari",
+            "email": "jiten.adhikary@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ahc\\Cron\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ahc\\Cron\\Test\\": "tests/"
+        }
+    },
+    "require": {
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7.0"
+    }
+}
