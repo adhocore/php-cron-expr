@@ -1,4 +1,4 @@
-## adhcore/cron-expr [![build status](https://travis-ci.org/adhocore/cron-expr.svg?branch=master)](https://travis-ci.org/adhocore/cron-expr)
+## adhocore/cron-expr [![build status](https://travis-ci.org/adhocore/cron-expr.svg?branch=master)](https://travis-ci.org/adhocore/cron-expr)
 
 - Lightweight Cron expression parser library for PHP.
 
@@ -29,10 +29,10 @@ Following tags are available and they are converted to real cron expressions bef
 - *@daily* - every day
 - *@weekly* - every week
 - *@hourly* - every hour
-- *@5minuts* - every 5 minutes
-- *@10minuts* - every 10 minutes
-- *@15minuts* - every 15 minutes
-- *@30minuts* - every 30 minutes
+- *@5minutes* - every 5 minutes
+- *@10minutes* - every 10 minutes
+- *@15minutes* - every 15 minutes
+- *@30minutes* - every 30 minutes
 - *@always* - every minute
 
 ### Modifiers
