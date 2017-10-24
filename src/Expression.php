@@ -51,8 +51,8 @@ class Expression
     /**
      * Parse cron expression to decide if it can be run on given time (or default now).
      *
-     * @param  string $expr  The cron expression.
-     * @param  int    $time  The timestamp to validate the cron expr against. Defaults to now.
+     * @param string $expr The cron expression.
+     * @param int    $time The timestamp to validate the cron expr against. Defaults to now.
      *
      * @return bool
      */
@@ -123,12 +123,12 @@ class Expression
 
     /**
      * Check if modifiers [L C W #] are satisfied.
-     * 
+     *
      * @internal
      *
-     * @param  string $value
-     * @param  int    $pos
-     * @param  int    $time
+     * @param string $value
+     * @param int    $pos
+     * @param int    $time
      *
      * @return bool
      */
@@ -165,7 +165,7 @@ class Expression
         if ($pos === 4) {
             if ($pos = strpos($value, 'L')) {
                 $value = explode('L', str_replace('7L', '0L', $value));
-                $decr = $time[6];
+                $decr  = $time[6];
                 for ($i = 0; $i < 7; $i++) {
                     $decr -= $i;
                     if (date('w', strtotime("$time[5]-$month-$decr")) == $value[0]) {
