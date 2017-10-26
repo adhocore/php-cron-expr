@@ -9,14 +9,19 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider scheduleProvider
-     * @covers       \Ahc\Cron\Expression::isDue
-     * @covers       \Ahc\Cron\Expression::checkModifier
      */
     public function test_isDue($expr, $time, $foo, $expected)
     {
         $actual = Expression::isDue($expr, $time);
 
         $this->assertSame($expected, $actual, 'The expression ' . $expr . ' has failed');
+    }
+
+    public function test_isCronDue()
+    {
+        $expr = new Expression;
+
+        $this->assertTrue(is_bool($expr->isCronDue('*/1 * * * *', time())));
     }
 
     public function test_isDue_throws_if_expr_invalid()
