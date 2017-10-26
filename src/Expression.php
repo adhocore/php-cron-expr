@@ -155,7 +155,7 @@ class Expression
         if (strpos($offset, '-') !== false) {
             $parts = explode('-', $offset);
 
-            return ($parts[0] <= $time[$pos] && $time[$pos] <= $parts[1]);
+            return $parts[0] <= $time[$pos] && $time[$pos] <= $parts[1];
         }
 
         if (is_numeric($offset)) {
@@ -222,7 +222,7 @@ class Expression
 
         if ($pos = strpos($value, 'L')) {
             $value = explode('L', str_replace('7L', '0L', $value));
-            $decr = $time[6];
+            $decr  = $time[6];
             for ($i = 0; $i < 7; $i++) {
                 $decr -= $i;
                 if (date('w', strtotime("$time[5]-$month-$decr")) == $value[0]) {
