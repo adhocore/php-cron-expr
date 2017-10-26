@@ -60,29 +60,12 @@ class Expression
     {
         list($expr, $time) = static::process($expr, $time);
 
-        foreach ($expr as $pos => $value) {
-            if ($value === '*' || $value === '?') {
+        foreach ($expr as $pos => $segment) {
+            if ($segment === '*' || $segment === '?') {
                 continue;
             }
 
-            $isDue = true;
-            $value = explode(',', trim($value));
-
-            foreach ($value as $offset) {
-                $isDue = static::isOffsetDue($offset, $pos, $time);
-
-                if (null === $isDue) {
-                    throw new \UnexpectedValueException(
-                        sprintf('Invalid offset value %s for segment #%d', $offset, $pos)
-                    );
-                }
-
-                if ($isDue) {
-                    break;
-                }
-            }
-
-            if (!$isDue) {
+            if (!static::isSegmentDue($segment, $pos, $time)) {
                 return false;
             }
         }
@@ -126,6 +109,26 @@ class Expression
         return [$expr, $time];
     }
 
+    protected static function isSegmentDue($segment, $pos, $time)
+    {
+        $isDue   = true;
+        $offsets = explode(',', trim($segment));
+
+        foreach ($offsets as $offset) {
+            if (null === $isDue = static::isOffsetDue($offset, $pos, $time)) {
+                throw new \UnexpectedValueException(
+                    sprintf('Invalid offset value %s for segment #%d', $offset, $pos)
+                );
+            }
+
+            if ($isDue) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Check if a given offset at a position is due with respect to given time.
      *
@@ -137,36 +140,50 @@ class Expression
      */
     protected static function isOffsetDue($offset, $pos, $time)
     {
-        if (strpos($offset, '*/') !== false || strpos($offset, '0/') !== false) {
-            $parts = explode('/', $offset, 2);
-
-            return $time[$pos] % $parts[1] === 0;
-        }
-
         if (strpos($offset, '/') !== false) {
-            $parts    = explode('/', $offset, 2);
-            $subparts = explode('-', $parts[0], 2) + [1 => $time[$pos]];
-
-            return ($subparts[0] <= $time[$pos] && $time[$pos] <= $subparts[1] && $parts[1])
-                ? in_array($time[$pos], range($subparts[0], $subparts[1], $parts[1]))
-                : false;
+            return static::inStep($time[$pos], $offset);
         }
 
         if (strpos($offset, '-') !== false) {
-            $parts = explode('-', $offset);
-
-            return $parts[0] <= $time[$pos] && $time[$pos] <= $parts[1];
+            return static::inRange($time[$pos], $offset);
         }
 
         if (is_numeric($offset)) {
             return $time[$pos] == $offset;
         }
 
-        if (($pos === 2 || $pos === 4) && strpbrk($offset, 'LCW#')) {
-            return $pos === 4
-                ? static::checkWeekDay($offset, $time)
-                : static::checkMonthDay($offset, $time);
+        $isModifier = strpbrk($offset, 'LCW#');
+
+        if ($pos === 2 && $isModifier) {
+            return static::checkMonthDay($offset, $time);
         }
+
+        if ($pos === 4 && $isModifier) {
+            return static::checkWeekDay($offset, $time);
+        }
+    }
+
+    protected static function inRange($value, $offset)
+    {
+        $parts = explode('-', $offset);
+
+        return $parts[0] <= $value && $value <= $parts[1];
+    }
+
+    protected static function inStep($value, $offset)
+    {
+        if (strpos($offset, '*/') !== false || strpos($offset, '0/') !== false) {
+            $parts = explode('/', $offset, 2);
+
+            return $value % $parts[1] === 0;
+        }
+
+        $parts    = explode('/', $offset, 2);
+        $subparts = explode('-', $parts[0], 2) + [1 => $value];
+
+        return ($subparts[0] <= $value && $value <= $subparts[1] && $parts[1])
+            ? in_array($value, range($subparts[0], $subparts[1], $parts[1]))
+            : false;
     }
 
     /**
