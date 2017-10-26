@@ -1,4 +1,12 @@
-## adhocore/cron-expr [![build status](https://travis-ci.org/adhocore/cron-expr.svg?branch=master)](https://travis-ci.org/adhocore/cron-expr)
+## adhocore/cron-expr
+
+[![Latest Version](https://img.shields.io/github/release/adhocore/cron-expr.svg?style=flat-square)](https://github.com/adhocore/cron-expr/releases)
+[![Travis Build](https://img.shields.io/travis/adhocore/cron-expr/master.svg?style=flat-square)](https://travis-ci.org/adhocore/cron-expr?branch=master)
+[![Scrutinizer CI](https://img.shields.io/scrutinizer/g/adhocore/cron-expr.svg?style=flat-square)](https://scrutinizer-ci.com/g/adhocore/cron-expr/?branch=master)
+[![Codecov branch](https://img.shields.io/codecov/c/github/adhocore/cron-expr/master.svg?style=flat-square)](https://codecov.io/gh/adhocore/cron-expr)
+[![StyleCI](https://styleci.io/repos/94228363/shield)](https://styleci.io/repos/94228363)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+
 
 - Lightweight Cron expression parser library for PHP.
 
