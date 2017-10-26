@@ -4,7 +4,7 @@ php:
   # The adhocore/cron-expr should run fine with php 5.4+, but phpunit 5.7 requires php 5.6+
   # - 5.4
   # - 5.5
-  - 5.6  
+  - 5.6
   - 7.0
   - 7.1
 
@@ -12,4 +12,7 @@ install:
   - composer install --prefer-dist
 
 script:
-  - vendor/bin/phpunit --coverage-text
+  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
