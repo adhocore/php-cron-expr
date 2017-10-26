@@ -54,6 +54,11 @@ class SegmentChecker
             return $time[$pos] == $offset;
         }
 
+        return static::inModifier($offset, $pos, $time);
+    }
+
+    protected static function inModifier($offset, $pos, $time)
+    {
         $isModifier = strpbrk($offset, 'LCW#');
 
         if ($pos === 2 && $isModifier) {
