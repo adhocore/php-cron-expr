@@ -15,6 +15,10 @@ Expression::isDue('@always');
 Expression::isDue('@hourly', '2015-01-01 00:00:00');
 Expression::isDue('*/20 * * * *', new DateTime);
 Expression::isDue('5-34/4 * * * *', time());
+
+// Dont like static calls? Below is possible too!
+$expr = new Expression;
+$expr->isCronDue('*/1 * * * *', time());
 ```
 
 ### Real Abbreviations
