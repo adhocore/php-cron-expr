@@ -218,7 +218,7 @@ class Expression
         }
     }
 
-    protected function isClosestWeekDay($value, $month, $time)
+    protected static function isClosestWeekDay($value, $month, $time)
     {
         foreach ([0, -1, 1, -2, 2] as $i) {
             $incr = $value + $i;
