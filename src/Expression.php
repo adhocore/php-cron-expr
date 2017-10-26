@@ -96,6 +96,15 @@ class Expression
             );
         }
 
+        $time = static::normalizeTime($time);
+
+        $time = array_map('intval', explode(' ', date('i G j n w Y t d m N', $time)));
+
+        return [$expr, $time];
+    }
+
+    protected static function normalizeTime($time)
+    {
         if (empty($time)) {
             $time = time();
         } elseif (is_string($time)) {
@@ -104,9 +113,7 @@ class Expression
             $time = $time->getTimestamp();
         }
 
-        $time = array_map('intval', explode(' ', date('i G j n w Y t d m N', $time)));
-
-        return [$expr, $time];
+        return $time;
     }
 
     protected static function isSegmentDue($segment, $pos, $time)
@@ -207,17 +214,22 @@ class Expression
         if ($pos = strpos($value, 'W')) {
             $value = substr($value, 0, $pos);
 
-            foreach ([0, -1, 1, -2, 2] as $i) {
-                $incr = $value + $i;
-                if ($incr > 0 && $incr <= $time[6]) {
-                    if ($incr < 10) {
-                        $incr = '0' . $incr;
-                    }
+            return static::isClosestWeekDay($value, $month, $time);
+        }
+    }
 
-                    $parts = explode(' ', date('N m j', strtotime("$time[5]-$month-$incr")));
-                    if ($parts[0] < 6 && $parts[1] == $month) {
-                        return $time[2] == $parts[2];
-                    }
+    protected function isClosestWeekDay($value, $month, $time)
+    {
+        foreach ([0, -1, 1, -2, 2] as $i) {
+            $incr = $value + $i;
+            if ($incr > 0 && $incr <= $time[6]) {
+                if ($incr < 10) {
+                    $incr = '0' . $incr;
+                }
+
+                $parts = explode(' ', date('N m j', strtotime("$time[5]-$month-$incr")));
+                if ($parts[0] < 6 && $parts[1] == $month) {
+                    return $time[2] == $parts[2];
                 }
             }
         }
@@ -237,17 +249,8 @@ class Expression
     {
         $month = $time[8] < 10 ? '0' . $time[8] : $time[8];
 
-        if ($pos = strpos($value, 'L')) {
-            $value = explode('L', str_replace('7L', '0L', $value));
-            $decr  = $time[6];
-            for ($i = 0; $i < 7; $i++) {
-                $decr -= $i;
-                if (date('w', strtotime("$time[5]-$month-$decr")) == $value[0]) {
-                    return $time[2] == $decr;
-                }
-            }
-
-            return false;
+        if (strpos($value, 'L')) {
+            return static::lasWeekDay($value, $month, $time);
         }
 
         if (strpos($value, '#')) {
@@ -259,6 +262,21 @@ class Expression
 
             return intval($time[7] / 7) == $value[1] - 1;
         }
+    }
+
+    protected static function lasWeekDay($value, $month, $time)
+    {
+        $value = explode('L', str_replace('7L', '0L', $value));
+        $decr  = $time[6];
+
+        for ($i = 0; $i < 7; $i++) {
+            $decr -= $i;
+            if (date('w', strtotime("$time[5]-$month-$decr")) == $value[0]) {
+                return $time[2] == $decr;
+            }
+        }
+
+        return false;
     }
 
     /**
