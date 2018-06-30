@@ -9,6 +9,7 @@
 
 
 - Lightweight Cron expression parser library for PHP.
+- Very fast because it bails early in case a segment doesnt match.
 
 ## Installation
 ```bash
