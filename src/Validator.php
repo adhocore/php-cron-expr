@@ -93,25 +93,23 @@ class Validator
         $month = \str_pad($time[8], 2, '0', \STR_PAD_LEFT);
 
         if (\strpos($value, 'L')) {
-            return $this->lastWeekDay($value, $month, $time);
+            return $this->isLastWeekDay($value, $month, $time);
         }
 
-        if (\strpos($value, '#')) {
-            $value = \explode('#', \str_replace('0#', '7#', $value));
-
-            if ($value[0] < 0 || $value[0] > 7 || $value[1] < 1 || $value[1] > 5 || $time[9] != $value[0]) {
-                return false;
-            }
-
-            return \intval($time[7] / 7) == $value[1] - 1;
+        if (!\strpos($value, '#')) {
+            return null;
         }
 
-        // @codeCoverageIgnoreStart
-        return false;
-        // @codeCoverageIgnoreEnd
+        list($day, $nth) = \explode('#', \str_replace('0#', '7#', $value));
+
+        if (!$this->isNthWeekDay($day, $nth) || $time[9] != $day) {
+            return false;
+        }
+
+        return \intval($time[7] / 7) == $nth - 1;
     }
 
-    protected function lastWeekDay($value, $month, $time)
+    protected function isLastWeekDay($value, $month, $time)
     {
         $value = \explode('L', \str_replace('7L', '0L', $value));
         $decr  = $time[6];
@@ -124,5 +122,10 @@ class Validator
         }
 
         return false;
+    }
+
+    protected function isNthWeekDay($day, $nth)
+    {
+        return !($day < 0 || $day > 7 || $nth < 1 || $nth > 5);
     }
 }
