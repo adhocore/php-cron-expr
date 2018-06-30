@@ -16,7 +16,7 @@ class SegmentChecker
 
     public function __construct()
     {
-        $this->validator = new validator;
+        $this->validator = new Validator;
     }
 
     /**
