@@ -87,7 +87,7 @@ class Expression
                 continue;
             }
 
-            if (!$checker->isDue($segment, $pos, $time)) {
+            if (!$checker->checkDue($segment, $pos, $time)) {
                 return false;
             }
         }

@@ -9,8 +9,15 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider scheduleProvider
      */
-    public function test_isDue($expr, $time, $foo, $expected)
+    public function test_isDue($expr, $time, $foo, $expected, $throwsAt = false)
     {
+        if ($throwsAt) {
+            $this->setExpectedException(
+                \UnexpectedValueException::class,
+                "Invalid offset value at segment #$throwsAt"
+            );
+        }
+
         $actual = Expression::isDue($expr, $time);
 
         $this->assertSame($expected, $actual, 'The expression ' . $expr . ' has failed');
@@ -117,6 +124,8 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
             ['* * * * 5#2', strtotime('2011-07-01 00:00:00'), '2011-07-08 00:00:00', false],
             ['* * * * 5#1', strtotime('2011-07-01 00:00:00'), '2011-07-01 00:00:00', true],
             ['* * * * 3#4', strtotime('2011-07-01 00:00:00'), '2011-07-27 00:00:00', false],
+            ['* * * * 4W', strtotime('2011-07-01 00:00:00'), '2011-07-27 00:00:00', false, 4], // seg 4
+            ['* * * 1L *', strtotime('2011-07-01 00:00:00'), '2011-07-27 00:00:00', false, 3], // seg 3
         ];
     }
 }
