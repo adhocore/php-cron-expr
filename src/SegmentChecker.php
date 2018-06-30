@@ -28,7 +28,7 @@ class SegmentChecker
      *
      * @return bool
      */
-    public function isDue($segment, $pos, $time)
+    public function checkDue($segment, $pos, $time)
     {
         $isDue   = true;
         $offsets = \explode(',', \trim($segment));
@@ -36,7 +36,7 @@ class SegmentChecker
         foreach ($offsets as $offset) {
             if (null === $isDue = $this->isOffsetDue($offset, $pos, $time)) {
                 throw new \UnexpectedValueException(
-                    sprintf('Invalid offset value %s for segment #%d', $offset, $pos)
+                    sprintf('Invalid offset value at segment #%d: %s', $pos, $offset)
                 );
             }
 
@@ -86,8 +86,6 @@ class SegmentChecker
             return $this->validator->isValidWeekDay($offset, $time);
         }
 
-        // @codeCoverageIgnoreStart
-        return !$isModifier;
-        // @codeCoverageIgnoreEnd
+        return null;
     }
 }
