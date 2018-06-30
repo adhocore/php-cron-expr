@@ -20,7 +20,7 @@ class SegmentChecker
     }
 
     /**
-     * Checks if a cron segment satisfies given time
+     * Checks if a cron segment satisfies given time.
      *
      * @param string $segment
      * @param int    $pos
