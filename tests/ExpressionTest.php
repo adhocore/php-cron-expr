@@ -3,45 +3,63 @@
 namespace Ahc\Cron\Test;
 
 use Ahc\Cron\Expression;
+use PHPUnit\Framework\TestCase;
 
-class ExpressionTest extends \PHPUnit_Framework_TestCase
+class ExpressionTest extends TestCase
 {
     /**
      * @dataProvider scheduleProvider
      */
     public function test_isDue($expr, $time, $foo, $expected, $throwsAt = false)
     {
-        if ($throwsAt) {
-            $this->setExpectedException(
-                \UnexpectedValueException::class,
-                "Invalid offset value at segment #$throwsAt"
-            );
-        }
-
         $actual = Expression::isDue($expr, $time);
 
         $this->assertSame($expected, $actual, 'The expression ' . $expr . ' has failed');
+    }
+
+    /**
+     * @dataProvider invalidScheduleProvider
+     * @expectedException \UnexpectedValueException
+     */
+    public function test_isDue_on_invalid_expression($expr, $time, $foo, $expected, $throwsAt = false)
+    {
+        Expression::isDue($expr, $time);
     }
 
     public function test_isCronDue()
     {
         $expr = new Expression;
 
-        $this->assertTrue(is_bool($expr->isCronDue('*/1 * * * *', time())));
+        $this->assertInternalType('boolean', $expr->isCronDue('*/1 * * * *', time()));
     }
 
+    /**
+     * @expectedException \UnexpectedValueException
+     */
     public function test_isDue_throws_if_expr_invalid()
     {
-        $this->setExpectedException(\UnexpectedValueException::class);
-
         Expression::isDue('@invalid');
     }
 
+    /**
+     * @expectedException \UnexpectedValueException
+     */
     public function test_isDue_throws_if_modifier_invalid()
     {
-        $this->setExpectedException(\UnexpectedValueException::class);
-
         Expression::isDue('* * 2L * *');
+    }
+
+    /**
+     * Data provider for cron schedule.
+     *
+     * @return array
+     */
+    public function invalidScheduleProvider()
+    {
+        return [
+            ['* * * * 4W', strtotime('2011-07-01 00:00:00'), '2011-07-27 00:00:00', false, 4], // seg 4
+            ['* * * 1L *', strtotime('2011-07-01 00:00:00'), '2011-07-27 00:00:00', false, 3], // seg 3
+        ];
     }
 
     /**
@@ -124,8 +142,6 @@ class ExpressionTest extends \PHPUnit_Framework_TestCase
             ['* * * * 5#2', strtotime('2011-07-01 00:00:00'), '2011-07-08 00:00:00', false],
             ['* * * * 5#1', strtotime('2011-07-01 00:00:00'), '2011-07-01 00:00:00', true],
             ['* * * * 3#4', strtotime('2011-07-01 00:00:00'), '2011-07-27 00:00:00', false],
-            ['* * * * 4W', strtotime('2011-07-01 00:00:00'), '2011-07-27 00:00:00', false, 4], // seg 4
-            ['* * * 1L *', strtotime('2011-07-01 00:00:00'), '2011-07-27 00:00:00', false, 3], // seg 3
         ];
     }
 }
