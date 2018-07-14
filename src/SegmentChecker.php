@@ -31,7 +31,7 @@ class SegmentChecker
     public function checkDue($segment, $pos, $time)
     {
         $isDue   = true;
-        $offsets = \explode(',', \trim($segment));
+        $offsets = explode(',', trim($segment));
 
         foreach ($offsets as $offset) {
             if (null === $isDue = $this->isOffsetDue($offset, $pos, $time)) {
@@ -59,15 +59,15 @@ class SegmentChecker
      */
     protected function isOffsetDue($offset, $pos, $time)
     {
-        if (\strpos($offset, '/') !== false) {
+        if (strpos($offset, '/') !== false) {
             return $this->validator->inStep($time[$pos], $offset);
         }
 
-        if (\strpos($offset, '-') !== false) {
+        if (strpos($offset, '-') !== false) {
             return $this->validator->inRange($time[$pos], $offset);
         }
 
-        if (\is_numeric($offset)) {
+        if (is_numeric($offset)) {
             return $time[$pos] == $offset;
         }
 
@@ -76,7 +76,7 @@ class SegmentChecker
 
     protected function checkModifier($offset, $pos, $time)
     {
-        $isModifier = \strpbrk($offset, 'LCW#');
+        $isModifier = strpbrk($offset, 'LCW#');
 
         if ($pos === 2 && $isModifier) {
             return $this->validator->isValidMonthDay($offset, $time);
