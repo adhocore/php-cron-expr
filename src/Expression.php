@@ -109,10 +109,10 @@ class Expression
             $expr = static::$expressions[$expr];
         }
 
-        $expr = \str_ireplace(\array_keys(static::$literals), \array_values(static::$literals), $expr);
-        $expr = \explode(' ', $expr);
+        $expr = str_ireplace(array_keys(static::$literals), array_values(static::$literals), $expr);
+        $expr = explode(' ', $expr);
 
-        if (\count($expr) < 5 || \count($expr) > 6) {
+        if (count($expr) < 5 || count($expr) > 6) {
             throw new \UnexpectedValueException(
                 'Cron $expr should have 5 or 6 segments delimited by space'
             );
@@ -120,7 +120,7 @@ class Expression
 
         $time = static::normalizeTime($time);
 
-        $time = \array_map('intval', \explode(' ', \date('i G j n w Y t d m N', $time)));
+        $time = array_map('intval', explode(' ', date('i G j n w Y t d m N', $time)));
 
         return [$expr, $time];
     }
@@ -128,9 +128,9 @@ class Expression
     protected function normalizeTime($time)
     {
         if (empty($time)) {
-            $time = \time();
-        } elseif (\is_string($time)) {
-            $time = \strtotime($time);
+            $time = time();
+        } elseif (is_string($time)) {
+            $time = strtotime($time);
         } elseif ($time instanceof \DateTime) {
             $time = $time->getTimestamp();
         }

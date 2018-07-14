@@ -13,24 +13,24 @@ class Validator
 {
     public function inRange($value, $offset)
     {
-        $parts = \explode('-', $offset);
+        $parts = explode('-', $offset);
 
         return $parts[0] <= $value && $value <= $parts[1];
     }
 
     public function inStep($value, $offset)
     {
-        if (\strpos($offset, '*/') !== false || \strpos($offset, '0/') !== false) {
-            $parts = \explode('/', $offset, 2);
+        if (strpos($offset, '*/') !== false || strpos($offset, '0/') !== false) {
+            $parts = explode('/', $offset, 2);
 
             return $value % $parts[1] === 0;
         }
 
-        $parts    = \explode('/', $offset, 2);
-        $subparts = \explode('-', $parts[0], 2) + [1 => $value];
+        $parts    = explode('/', $offset, 2);
+        $subparts = explode('-', $parts[0], 2) + [1 => $value];
 
         return ($subparts[0] <= $value && $value <= $subparts[1] && $parts[1])
-            ? \in_array($value, \range($subparts[0], $subparts[1], $parts[1]))
+            ? in_array($value, range($subparts[0], $subparts[1], $parts[1]))
             : false;
     }
 
@@ -50,9 +50,9 @@ class Validator
             return $time[2] == $time[6];
         }
 
-        if ($pos = \strpos($value, 'W')) {
-            $value = \substr($value, 0, $pos);
-            $month = \str_pad($time[8], 2, '0', \STR_PAD_LEFT);
+        if ($pos = strpos($value, 'W')) {
+            $value = substr($value, 0, $pos);
+            $month = str_pad($time[8], 2, '0', STR_PAD_LEFT);
 
             return $this->isClosestWeekDay($value, $month, $time);
         }
@@ -66,8 +66,8 @@ class Validator
                 continue;
             }
 
-            $incr  = \str_pad($incr, 2, '0', \STR_PAD_LEFT);
-            $parts = \explode(' ', \date('N m j', \strtotime("{$time[5]}-$month-$incr")));
+            $incr  = str_pad($incr, 2, '0', STR_PAD_LEFT);
+            $parts = explode(' ', date('N m j', strtotime("{$time[5]}-$month-$incr")));
             if ($parts[0] < 6 && $parts[1] == $month) {
                 return $time[2] == $parts[2];
             }
@@ -90,33 +90,33 @@ class Validator
      */
     public function isValidWeekDay($value, $time)
     {
-        $month = \str_pad($time[8], 2, '0', \STR_PAD_LEFT);
+        $month = str_pad($time[8], 2, '0', STR_PAD_LEFT);
 
-        if (\strpos($value, 'L')) {
+        if (strpos($value, 'L')) {
             return $this->isLastWeekDay($value, $month, $time);
         }
 
-        if (!\strpos($value, '#')) {
+        if (!strpos($value, '#')) {
             return null;
         }
 
-        list($day, $nth) = \explode('#', \str_replace('0#', '7#', $value));
+        list($day, $nth) = explode('#', str_replace('0#', '7#', $value));
 
         if (!$this->isNthWeekDay($day, $nth) || $time[9] != $day) {
             return false;
         }
 
-        return \intval($time[7] / 7) == $nth - 1;
+        return intval($time[7] / 7) == $nth - 1;
     }
 
     protected function isLastWeekDay($value, $month, $time)
     {
-        $value = \explode('L', \str_replace('7L', '0L', $value));
+        $value = explode('L', str_replace('7L', '0L', $value));
         $decr  = $time[6];
 
         for ($i = 0; $i < 7; $i++) {
             $decr -= $i;
-            if (\date('w', \strtotime("{$time[5]}-$month-$decr")) == $value[0]) {
+            if (date('w', strtotime("{$time[5]}-$month-$decr")) == $value[0]) {
                 return $time[2] == $decr;
             }
         }
