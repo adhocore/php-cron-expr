@@ -1,9 +1,9 @@
 ## adhocore/cron-expr
 
-[![Latest Version](https://img.shields.io/github/release/adhocore/cron-expr.svg?style=flat-square)](https://github.com/adhocore/cron-expr/releases)
+[![Latest Version](https://img.shields.io/github/release/adhocore/php-cron-expr.svg?style=flat-square)](https://github.com/adhocore/php-cron-expr/releases)
 [![Travis Build](https://img.shields.io/travis/adhocore/php-cron-expr/master.svg?style=flat-square)](https://travis-ci.org/adhocore/php-cron-expr?branch=master)
-[![Scrutinizer CI](https://img.shields.io/scrutinizer/g/adhocore/cron-expr.svg?style=flat-square)](https://scrutinizer-ci.com/g/adhocore/cron-expr/?branch=master)
-[![Codecov branch](https://img.shields.io/codecov/c/github/adhocore/cron-expr/master.svg?style=flat-square)](https://codecov.io/gh/adhocore/cron-expr)
+[![Scrutinizer CI](https://img.shields.io/scrutinizer/g/adhocore/php-cron-expr.svg?style=flat-square)](https://scrutinizer-ci.com/g/adhocore/php-cron-expr/?branch=master)
+[![Codecov branch](https://img.shields.io/codecov/c/github/adhocore/php-cron-expr/master.svg?style=flat-square)](https://codecov.io/gh/adhocore/php-cron-expr)
 [![StyleCI](https://styleci.io/repos/94228363/shield)](https://styleci.io/repos/94228363)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
