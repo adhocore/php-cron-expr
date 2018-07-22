@@ -11,12 +11,16 @@
 - Lightweight Cron expression parser library for PHP.
 - Very fast because it bails early in case a segment doesnt match.
 
+
 ## Installation
+
 ```bash
 composer require adhocore/cron-expr
 ```
 
+
 ## Usage
+
 ```php
 use Ahc\Cron\Expression;
 
@@ -31,10 +35,11 @@ $expr->isCronDue('*/1 * * * *', time());
 ```
 
 ### Real Abbreviations
+
 You can use real abbreviations for month and week days. eg: `JAN`, `dec`, `fri`, `SUN`
 
-
 ### Tags
+
 Following tags are available and they are converted to real cron expressions before parsing:
 
 - *@yearly* or *@annually* - every year
@@ -49,6 +54,7 @@ Following tags are available and they are converted to real cron expressions bef
 - *@always* - every minute
 
 ### Modifiers
+
 Following modifiers supported
 
 - *Day of Month / 3rd segment:*
