@@ -9,8 +9,8 @@
 
 
 - Lightweight Cron expression parser library for PHP.
-- Very fast because it bails early in case a segment doesnt match.
-
+- Very **fast** because it bails early in case a segment doesnt match.
+- Real [benchmark](https://github.com/adhocore/php-cron-bench) shows it is about 6.48x to 9.69x faster than `mtdowling/cron-expression`
 
 ## Installation
 
