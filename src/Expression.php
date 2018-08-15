@@ -88,7 +88,7 @@ class Expression
      */
     public function isCronDue($expr, $time = null)
     {
-        list($expr, $time) = $this->process($expr, $time);
+        list($expr, $times) = $this->process($expr, $time);
 
         $checker = new SegmentChecker;
         foreach ($expr as $pos => $segment) {
@@ -96,7 +96,7 @@ class Expression
                 continue;
             }
 
-            if (!$checker->checkDue($segment, $pos, $time)) {
+            if (!$checker->checkDue($segment, $pos, $times)) {
                 return false;
             }
         }
@@ -127,11 +127,10 @@ class Expression
             );
         }
 
-        $time = static::normalizeTime($time);
+        $time  = static::normalizeTime($time);
+        $times = \array_map('intval', \explode(' ', \date('i G j n w Y t d m N', $time)));
 
-        $time = \array_map('intval', \explode(' ', \date('i G j n w Y t d m N', $time)));
-
-        return [$expr, $time];
+        return [$expr, $times];
     }
 
     protected function normalizeTime($time)
