@@ -29,18 +29,33 @@ class Validator
 
     public function inStep($value, $offset)
     {
-        if (\strpos($offset, '*/') !== false || \strpos($offset, '0/') !== false) {
-            $parts = \explode('/', $offset, 2);
+        $parts = \explode('/', $offset, 2);
 
+        if (empty($parts[1])) {
+            return false;
+        }
+
+        if (\strpos($offset, '*/') !== false || \strpos($offset, '0/') !== false) {
             return $value % $parts[1] === 0;
         }
 
         $parts    = \explode('/', $offset, 2);
         $subparts = \explode('-', $parts[0], 2) + [1 => $value];
 
-        return ($subparts[0] <= $value && $value <= $subparts[1] && $parts[1])
-            ? \in_array($value, \range($subparts[0], $subparts[1], $parts[1]))
-            : false;
+        return $this->inStepRange($value, $subparts[0], $subparts[1], $parts[1]);
+    }
+
+    public function inStepRange($value, $start, $end, $step)
+    {
+        if (($start + $step) > $end) {
+            return false;
+        }
+
+        if ($start <= $value && $value <= $end) {
+            return \in_array($value, \range($start, $end, $step));
+        }
+
+        return false;
     }
 
     /**
