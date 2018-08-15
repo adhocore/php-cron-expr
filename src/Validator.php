@@ -20,6 +20,14 @@ namespace Ahc\Cron;
  */
 class Validator
 {
+    /**
+     * Check if the value is in range of given offset.
+     *
+     * @param int    $value
+     * @param string $offset
+     *
+     * @return bool
+     */
     public function inRange($value, $offset)
     {
         $parts = \explode('-', $offset);
@@ -27,6 +35,14 @@ class Validator
         return $parts[0] <= $value && $value <= $parts[1];
     }
 
+    /**
+     * Check if the value is in step of given offset.
+     *
+     * @param int    $value
+     * @param string $offset
+     *
+     * @return bool
+     */
     public function inStep($value, $offset)
     {
         $parts = \explode('/', $offset, 2);
@@ -45,6 +61,16 @@ class Validator
         return $this->inStepRange($value, $subparts[0], $subparts[1], $parts[1]);
     }
 
+    /**
+     * Check if the value falls between start and end when advanved by step.
+     *
+     * @param int $value
+     * @param int $start
+     * @param int $end
+     * @param int $step
+     *
+     * @return bool
+     */
     public function inStepRange($value, $start, $end, $step)
     {
         if (($start + $step) > $end) {
