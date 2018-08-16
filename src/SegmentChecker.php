@@ -23,9 +23,9 @@ class SegmentChecker
     /** @var Validator */
     protected $validator;
 
-    public function __construct()
+    public function __construct(Validator $validator = null)
     {
-        $this->validator = new Validator;
+        $this->validator = $validator ?: new Validator;
     }
 
     /**
