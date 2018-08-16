@@ -24,6 +24,9 @@ class Expression
     /** @var Expression */
     protected static $instance;
 
+    /** @var SegmentChecker */
+    protected $checker;
+
     protected static $expressions = [
         '@yearly'    => '0 0 1 1 *',
         '@annually'  => '0 0 1 1 *',
@@ -59,6 +62,15 @@ class Expression
         'nov' => 11,
         'dec' => 12,
     ];
+
+    public function __construct(SegmentChecker $checker = null)
+    {
+        $this->checker = $checker ?: new SegmentChecker;
+
+        if (null === static::$instance) {
+            static::$instance = $this;
+        }
+    }
 
     public function instance()
     {
@@ -109,13 +121,12 @@ class Expression
     {
         list($expr, $times) = $this->process($expr, $time);
 
-        $checker = new SegmentChecker;
         foreach ($expr as $pos => $segment) {
             if ($segment === '*' || $segment === '?') {
                 continue;
             }
 
-            if (!$checker->checkDue($segment, $pos, $times)) {
+            if (!$this->checker->checkDue($segment, $pos, $times)) {
                 return false;
             }
         }
