@@ -150,16 +150,12 @@ class Expression
         foreach ($jobs as $name => $expr) {
             $expr = $this->normalizeExpr($expr);
 
-            if (isset($cache[$expr])) {
-                $dues[] = $name;
-
-                continue;
+            if (!isset($cache[$expr])) {
+                $cache[$expr] = $this->isCronDue($expr, $time);
             }
 
-            if ($this->isCronDue($expr, $time)) {
+            if ($cache[$expr]) {
                 $dues[] = $name;
-
-                $cache[$expr] = true;
             }
         }
 
