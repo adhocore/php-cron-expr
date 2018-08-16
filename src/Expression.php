@@ -21,6 +21,9 @@ namespace Ahc\Cron;
  */
 class Expression
 {
+    /** @var Expression */
+    protected static $instance;
+
     protected static $expressions = [
         '@yearly'    => '0 0 1 1 *',
         '@annually'  => '0 0 1 1 *',
@@ -67,13 +70,28 @@ class Expression
      */
     public static function isDue($expr, $time = null)
     {
-        static $instance;
-
-        if (!$instance) {
-            $instance = new static;
+        if (null === static::$instance) {
+            static::$instance = new static;
         }
 
-        return $instance->isCronDue($expr, $time);
+        return static::$instance->isCronDue($expr, $time);
+    }
+
+    /**
+     * Filter only the jobs that are due.
+     *
+     * @param array $jobs Jobs with cron exprs. [job1 => cron-expr1, job2 => cron-expr2, ...]
+     * @param mixed $time The timestamp to validate the cron expr against. Defaults to now.
+     *
+     * @return array Due job names: [job1name, ...];
+     */
+    public static function getDues(array $jobs, $time = null)
+    {
+        if (null === static::$instance) {
+            static::$instance = new static;
+        }
+
+        return static::$instance->filter($jobs, $time);
     }
 
     /**
@@ -82,7 +100,7 @@ class Expression
      * Parse cron expression to decide if it can be run on given time (or default now).
      *
      * @param string $expr The cron expression.
-     * @param int    $time The timestamp to validate the cron expr against. Defaults to now.
+     * @param mixed  $time The timestamp to validate the cron expr against. Defaults to now.
      *
      * @return bool
      */
@@ -105,6 +123,38 @@ class Expression
     }
 
     /**
+     * Filter only the jobs that are due.
+     *
+     * @param array $jobs Jobs with cron exprs. [job1 => cron-expr1, job2 => cron-expr2, ...]
+     * @param mixed $time The timestamp to validate the cron expr against. Defaults to now.
+     *
+     * @return array Due job names: [job1name, ...];
+     */
+    public function filter(array $jobs, $time = null)
+    {
+        $dues = $cache = [];
+        $time = $this->normalizeTime($time);
+
+        foreach ($jobs as $name => $expr) {
+            $expr = $this->normalizeExpr($expr);
+
+            if (isset($cache[$expr])) {
+                $dues[] = $name;
+
+                continue;
+            }
+
+            if ($this->isCronDue($expr, $time)) {
+                $dues[] = $name;
+
+                $cache[$expr] = true;
+            }
+        }
+
+        return $dues;
+    }
+
+    /**
      * Process and prepare input.
      *
      * @param string $expr
@@ -114,10 +164,7 @@ class Expression
      */
     protected function process($expr, $time)
     {
-        if (isset(static::$expressions[$expr])) {
-            $expr = static::$expressions[$expr];
-        }
-
+        $expr = $this->normalizeExpr($expr);
         $expr = \str_ireplace(\array_keys(static::$literals), \array_values(static::$literals), $expr);
         $expr = \explode(' ', $expr);
 
@@ -145,4 +192,14 @@ class Expression
 
         return $time;
     }
+
+    protected function normalizeExpr($expr)
+    {
+        if (isset(static::$expressions[$expr])) {
+            $expr = static::$expressions[$expr];
+        }
+
+        return $expr;
+    }
+
 }
