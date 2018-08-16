@@ -58,6 +58,20 @@ class ExpressionTest extends TestCase
         Expression::isDue('* * 2L * *');
     }
 
+    public function test_filter_getDues()
+    {
+        $jobs = [
+            'job1' => '*/2 */2 * * *',
+            'job1' => '* 20,21,22 * * *',
+            'job3' => '7-9 * */9 * *',
+            'job4' => '*/5 * * * *',
+            'job5' => '@5minutes',
+            'job6' => '7-9 * */9 * *',
+        ];
+
+        $this->assertSame(['job1', 'job4', 'job5'], Expression::getDues($jobs, '2015-08-10 21:50:00'));
+    }
+
     /**
      * Data provider for cron schedule.
      *

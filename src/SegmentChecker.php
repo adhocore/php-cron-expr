@@ -23,9 +23,9 @@ class SegmentChecker
     /** @var Validator */
     protected $validator;
 
-    public function __construct()
+    public function __construct(Validator $validator = null)
     {
-        $this->validator = new Validator;
+        $this->validator = $validator ?: new Validator;
     }
 
     /**
@@ -33,17 +33,17 @@ class SegmentChecker
      *
      * @param string $segment
      * @param int    $pos
-     * @param int    $time
+     * @param array  $times
      *
      * @return bool
      */
-    public function checkDue($segment, $pos, $time)
+    public function checkDue($segment, $pos, $times)
     {
         $isDue   = true;
         $offsets = \explode(',', \trim($segment));
 
         foreach ($offsets as $offset) {
-            if (null === $isDue = $this->isOffsetDue($offset, $pos, $time)) {
+            if (null === $isDue = $this->isOffsetDue($offset, $pos, $times)) {
                 throw new \UnexpectedValueException(
                     sprintf('Invalid offset value at segment #%d: %s', $pos, $offset)
                 );
@@ -62,37 +62,37 @@ class SegmentChecker
      *
      * @param string $offset
      * @param int    $pos
-     * @param array  $time
+     * @param array  $times
      *
      * @return bool|null
      */
-    protected function isOffsetDue($offset, $pos, $time)
+    protected function isOffsetDue($offset, $pos, $times)
     {
         if (\strpos($offset, '/') !== false) {
-            return $this->validator->inStep($time[$pos], $offset);
+            return $this->validator->inStep($times[$pos], $offset);
         }
 
         if (\strpos($offset, '-') !== false) {
-            return $this->validator->inRange($time[$pos], $offset);
+            return $this->validator->inRange($times[$pos], $offset);
         }
 
         if (\is_numeric($offset)) {
-            return $time[$pos] == $offset;
+            return $times[$pos] == $offset;
         }
 
-        return $this->checkModifier($offset, $pos, $time);
+        return $this->checkModifier($offset, $pos, $times);
     }
 
-    protected function checkModifier($offset, $pos, $time)
+    protected function checkModifier($offset, $pos, $times)
     {
         $isModifier = \strpbrk($offset, 'LCW#');
 
         if ($pos === 2 && $isModifier) {
-            return $this->validator->isValidMonthDay($offset, $time);
+            return $this->validator->isValidMonthDay($offset, $times);
         }
 
         if ($pos === 4 && $isModifier) {
-            return $this->validator->isValidWeekDay($offset, $time);
+            return $this->validator->isValidWeekDay($offset, $times);
         }
 
         return null;

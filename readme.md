@@ -21,6 +21,8 @@ composer require adhocore/cron-expr
 
 ## Usage
 
+**Basic**
+
 ```php
 use Ahc\Cron\Expression;
 
@@ -32,6 +34,32 @@ Expression::isDue('5-34/4 * * * *', time());
 // Dont like static calls? Below is possible too!
 $expr = new Expression;
 $expr->isCronDue('*/1 * * * *', time());
+```
+
+**Bulk checks**
+
+When checking for several jobs at once, if more than one of the jobs share equivalent expression
+then the evaluation is done only once per go thus greatly improving performnce.
+
+```php
+use Ahc\Cron\Expression;
+
+$jobs = [
+    'job1' => '*/2 */2 * * *',
+    'job1' => '* 20,21,22 * * *',
+    'job3' => '7-9 * */9 * *',
+    'job4' => '*/5 * * * *',
+    'job5' => '@5minutes',     // equivalent to job4 (so it is due if job4 is due)
+    'job6' => '7-9 * */9 * *', // exact same as job3 (so it is due if job3 is due)
+];
+
+// The second param $time can be used same as above: null/time()/date string/DateTime
+$dueJobs = Expression::getDues($jobs, '2015-08-10 21:50:00');
+// ['job1', 'job4', 'job5']
+
+// Dont like static calls? Below is possible too!
+$expr = new Expression;
+$dueJobs = $expr->filter($jobs, time());
 ```
 
 ### Real Abbreviations

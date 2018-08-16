@@ -21,6 +21,12 @@ namespace Ahc\Cron;
  */
 class Expression
 {
+    /** @var Expression */
+    protected static $instance;
+
+    /** @var SegmentChecker */
+    protected $checker;
+
     protected static $expressions = [
         '@yearly'    => '0 0 1 1 *',
         '@annually'  => '0 0 1 1 *',
@@ -57,6 +63,24 @@ class Expression
         'dec' => 12,
     ];
 
+    public function __construct(SegmentChecker $checker = null)
+    {
+        $this->checker = $checker ?: new SegmentChecker;
+
+        if (null === static::$instance) {
+            static::$instance = $this;
+        }
+    }
+
+    public static function instance()
+    {
+        if (null === static::$instance) {
+            static::$instance = new static;
+        }
+
+        return static::$instance;
+    }
+
     /**
      * Parse cron expression to decide if it can be run on given time (or default now).
      *
@@ -67,13 +91,20 @@ class Expression
      */
     public static function isDue($expr, $time = null)
     {
-        static $instance;
+        return static::instance()->isCronDue($expr, $time);
+    }
 
-        if (!$instance) {
-            $instance = new static;
-        }
-
-        return $instance->isCronDue($expr, $time);
+    /**
+     * Filter only the jobs that are due.
+     *
+     * @param array $jobs Jobs with cron exprs. [job1 => cron-expr1, job2 => cron-expr2, ...]
+     * @param mixed $time The timestamp to validate the cron expr against. Defaults to now.
+     *
+     * @return array Due job names: [job1name, ...];
+     */
+    public static function getDues(array $jobs, $time = null)
+    {
+        return static::instance()->filter($jobs, $time);
     }
 
     /**
@@ -82,26 +113,53 @@ class Expression
      * Parse cron expression to decide if it can be run on given time (or default now).
      *
      * @param string $expr The cron expression.
-     * @param int    $time The timestamp to validate the cron expr against. Defaults to now.
+     * @param mixed  $time The timestamp to validate the cron expr against. Defaults to now.
      *
      * @return bool
      */
     public function isCronDue($expr, $time = null)
     {
-        list($expr, $time) = $this->process($expr, $time);
+        list($expr, $times) = $this->process($expr, $time);
 
-        $checker = new SegmentChecker;
         foreach ($expr as $pos => $segment) {
             if ($segment === '*' || $segment === '?') {
                 continue;
             }
 
-            if (!$checker->checkDue($segment, $pos, $time)) {
+            if (!$this->checker->checkDue($segment, $pos, $times)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Filter only the jobs that are due.
+     *
+     * @param array $jobs Jobs with cron exprs. [job1 => cron-expr1, job2 => cron-expr2, ...]
+     * @param mixed $time The timestamp to validate the cron expr against. Defaults to now.
+     *
+     * @return array Due job names: [job1name, ...];
+     */
+    public function filter(array $jobs, $time = null)
+    {
+        $dues = $cache = [];
+        $time = $this->normalizeTime($time);
+
+        foreach ($jobs as $name => $expr) {
+            $expr = $this->normalizeExpr($expr);
+
+            if (!isset($cache[$expr])) {
+                $cache[$expr] = $this->isCronDue($expr, $time);
+            }
+
+            if ($cache[$expr]) {
+                $dues[] = $name;
+            }
+        }
+
+        return $dues;
     }
 
     /**
@@ -114,10 +172,7 @@ class Expression
      */
     protected function process($expr, $time)
     {
-        if (isset(static::$expressions[$expr])) {
-            $expr = static::$expressions[$expr];
-        }
-
+        $expr = $this->normalizeExpr($expr);
         $expr = \str_ireplace(\array_keys(static::$literals), \array_values(static::$literals), $expr);
         $expr = \explode(' ', $expr);
 
@@ -127,11 +182,10 @@ class Expression
             );
         }
 
-        $time = static::normalizeTime($time);
+        $time  = static::normalizeTime($time);
+        $times = \array_map('intval', \explode(' ', \date('i G j n w Y t d m N', $time)));
 
-        $time = \array_map('intval', \explode(' ', \date('i G j n w Y t d m N', $time)));
-
-        return [$expr, $time];
+        return [$expr, $times];
     }
 
     protected function normalizeTime($time)
@@ -145,5 +199,14 @@ class Expression
         }
 
         return $time;
+    }
+
+    protected function normalizeExpr($expr)
+    {
+        if (isset(static::$expressions[$expr])) {
+            $expr = static::$expressions[$expr];
+        }
+
+        return $expr;
     }
 }
