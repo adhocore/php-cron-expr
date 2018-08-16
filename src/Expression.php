@@ -60,6 +60,15 @@ class Expression
         'dec' => 12,
     ];
 
+    public function instance()
+    {
+        if (null === static::$instance) {
+            static::$instance = new static;
+        }
+
+        return static::$instance;
+    }
+
     /**
      * Parse cron expression to decide if it can be run on given time (or default now).
      *
@@ -70,11 +79,7 @@ class Expression
      */
     public static function isDue($expr, $time = null)
     {
-        if (null === static::$instance) {
-            static::$instance = new static;
-        }
-
-        return static::$instance->isCronDue($expr, $time);
+        return static::instance()->isCronDue($expr, $time);
     }
 
     /**
@@ -87,11 +92,7 @@ class Expression
      */
     public static function getDues(array $jobs, $time = null)
     {
-        if (null === static::$instance) {
-            static::$instance = new static;
-        }
-
-        return static::$instance->filter($jobs, $time);
+        return static::instance()->filter($jobs, $time);
     }
 
     /**
