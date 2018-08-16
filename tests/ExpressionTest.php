@@ -66,6 +66,7 @@ class ExpressionTest extends TestCase
             'job3' => '7-9 * */9 * *',
             'job4' => '*/5 * * * *',
             'job5' => '@5minutes',
+            'job6' => '7-9 * */9 * *',
         ];
 
         $this->assertSame(['job1', 'job4', 'job5'], Expression::getDues($jobs, '2015-08-10 21:50:00'));
