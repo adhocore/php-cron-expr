@@ -173,7 +173,7 @@ class Expression
     protected function process($expr, $time)
     {
         $expr = $this->normalizeExpr($expr);
-        $expr = \preg_split('~\s+~', $expr); # 14
+        $expr = \preg_split('~\s+~', $expr); // 14
 
         if (\count($expr) < 5 || \count($expr) > 6) {
             throw new \UnexpectedValueException(
