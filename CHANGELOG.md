@@ -1,3 +1,9 @@
+## [v0.0.7](https://github.com/adhocore/php-cron-expr/releases/tag/v0.0.7) (2019-08-12)
+
+### Internal Refactors
+- **Expr**: Normalize expr, use regex split instead (Jitendra Adhikari) [_74f8dfc_](https://github.com/adhocore/php-cron-expr/commit/74f8dfc)
+
+
 ## [v0.0.6] 2018-08-16 00:08:45 UTC
 
 - [d933099](https://github.com/adhocore/php-cron-expr/commit/d933099) fix(expr): static ::instance()
