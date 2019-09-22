@@ -1,3 +1,10 @@
+## [v0.1.0](https://github.com/adhocore/php-cron-expr/releases/tag/v0.1.0) (2019-09-22)
+
+### Documentations
+- About stability (Jitendra Adhikari) [_1672edc_](https://github.com/adhocore/php-cron-expr/commit/1672edc)
+- Add php support info (Jitendra Adhikari) [_9d21717_](https://github.com/adhocore/php-cron-expr/commit/9d21717)
+
+
 ## [v0.0.7](https://github.com/adhocore/php-cron-expr/releases/tag/v0.0.7) (2019-08-12)
 
 ### Internal Refactors
