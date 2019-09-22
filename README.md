@@ -63,6 +63,9 @@ $expr = new Expression;
 $dueJobs = $expr->filter($jobs, time());
 ```
 
+### Stabillity
+Although not yet in v1.0, but the library and the API it provides is pretty stable and will not be changed too broadly.
+
 ### Real Abbreviations
 
 You can use real abbreviations for month and week days. eg: `JAN`, `dec`, `fri`, `SUN`
