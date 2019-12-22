@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the PHP-CRON-EXPR package.
  *
@@ -72,7 +74,7 @@ class Expression
         }
     }
 
-    public static function instance()
+    public static function instance(): self
     {
         if (null === static::$instance) {
             static::$instance = new static;
@@ -85,11 +87,11 @@ class Expression
      * Parse cron expression to decide if it can be run on given time (or default now).
      *
      * @param string $expr The cron expression.
-     * @param int    $time The timestamp to validate the cron expr against. Defaults to now.
+     * @param mixed  $time The timestamp to validate the cron expr against. Defaults to now.
      *
      * @return bool
      */
-    public static function isDue($expr, $time = null)
+    public static function isDue(string $expr, $time = null): bool
     {
         return static::instance()->isCronDue($expr, $time);
     }
@@ -102,7 +104,7 @@ class Expression
      *
      * @return array Due job names: [job1name, ...];
      */
-    public static function getDues(array $jobs, $time = null)
+    public static function getDues(array $jobs, $time = null): array
     {
         return static::instance()->filter($jobs, $time);
     }
@@ -117,7 +119,7 @@ class Expression
      *
      * @return bool
      */
-    public function isCronDue($expr, $time = null)
+    public function isCronDue(string $expr, $time = null): bool
     {
         list($expr, $times) = $this->process($expr, $time);
 
@@ -142,7 +144,7 @@ class Expression
      *
      * @return array Due job names: [job1name, ...];
      */
-    public function filter(array $jobs, $time = null)
+    public function filter(array $jobs, $time = null): array
     {
         $dues = $cache = [];
         $time = $this->normalizeTime($time);
@@ -168,9 +170,9 @@ class Expression
      * @param string $expr
      * @param mixed  $time
      *
-     * @return array
+     * @return array [expr, time]
      */
-    protected function process($expr, $time)
+    protected function process(string $expr, $time): array
     {
         $expr = $this->normalizeExpr($expr);
         $expr = \preg_split('~\s+~', $expr); // 14
@@ -187,7 +189,7 @@ class Expression
         return [$expr, $times];
     }
 
-    protected function normalizeTime($time)
+    protected function normalizeTime($time): int
     {
         if (empty($time)) {
             $time = \time();
@@ -200,7 +202,7 @@ class Expression
         return $time;
     }
 
-    protected function normalizeExpr($expr)
+    protected function normalizeExpr(string $expr): string
     {
         $expr = \trim($expr);
 
