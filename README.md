@@ -10,15 +10,16 @@
 
 - Lightweight Cron expression parser library for PHP.
 - Very **fast** because it bails early in case a segment doesnt match.
-- Supports PHP5.4 (if you are old school) to PHP7.3 (if you are cool).
 - Real [benchmark](https://github.com/adhocore/php-cron-bench) shows it is about 9.64x to 10.57x faster than `dragonmantank/cron-expression`
 
 ## Installation
 
 ```bash
 composer require adhocore/cron-expr
-```
 
+# PHP5.6 or lower
+composer require adhocore/cron-expr:0.1.0
+```
 
 ## Usage
 
@@ -63,9 +64,6 @@ $expr = new Expression;
 $dueJobs = $expr->filter($jobs, time());
 ```
 
-### Stabillity
-Although not yet in v1.0, but the library and the API it provides is pretty stable and will not be changed too broadly.
-
 ### Real Abbreviations
 
 You can use real abbreviations for month and week days. eg: `JAN`, `dec`, `fri`, `SUN`
@@ -95,3 +93,11 @@ Following modifiers supported
 - *Day of Week / 5th segment:*
 	- `L` stands for last weekday of month (eg: `2L` is last monday)
 	- `#` stands for nth day of week in the month (eg: `1#2` is second sunday)
+
+## LICENSE
+
+> &copy; [MIT](./LICENSE) | 2017-2019, Jitendra Adhikari
+
+## Credits
+
+This project is release managed by [please](https://github.com/adhocore/please).

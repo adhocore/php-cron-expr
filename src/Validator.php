@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the PHP-CRON-EXPR package.
  *
@@ -28,7 +30,7 @@ class Validator
      *
      * @return bool
      */
-    public function inRange($value, $offset)
+    public function inRange(int $value, string $offset): bool
     {
         $parts = \explode('-', $offset);
 
@@ -43,7 +45,7 @@ class Validator
      *
      * @return bool
      */
-    public function inStep($value, $offset)
+    public function inStep(int $value, string $offset): bool
     {
         $parts = \explode('/', $offset, 2);
 
@@ -58,7 +60,7 @@ class Validator
         $parts    = \explode('/', $offset, 2);
         $subparts = \explode('-', $parts[0], 2) + [1 => $value];
 
-        return $this->inStepRange($value, $subparts[0], $subparts[1], $parts[1]);
+        return $this->inStepRange((int) $value, (int) $subparts[0], (int) $subparts[1], (int) $parts[1]);
     }
 
     /**
@@ -71,7 +73,7 @@ class Validator
      *
      * @return bool
      */
-    public function inStepRange($value, $start, $end, $step)
+    public function inStepRange(int $value, int $start, int $end, int $step): bool
     {
         if (($start + $step) > $end) {
             return false;
@@ -92,9 +94,9 @@ class Validator
      * @param string $value
      * @param array  $time
      *
-     * @return bool|null
+     * @return bool
      */
-    public function isValidMonthDay($value, $time)
+    public function isValidMonthDay(string $value, array $time): bool
     {
         if ($value == 'L') {
             return $time[2] == $time[6];
@@ -102,13 +104,15 @@ class Validator
 
         if ($pos = \strpos($value, 'W')) {
             $value = \substr($value, 0, $pos);
-            $month = \str_pad($time[8], 2, '0', \STR_PAD_LEFT);
+            $month = $this->zeroPad($time[8]);
 
-            return $this->isClosestWeekDay($value, $month, $time);
+            return $this->isClosestWeekDay((int) $value, $month, $time);
         }
+
+        $this->unexpectedValue(2, $value);
     }
 
-    protected function isClosestWeekDay($value, $month, $time)
+    protected function isClosestWeekDay(int $value, string $month, array $time): bool
     {
         foreach ([0, -1, 1, -2, 2] as $i) {
             $incr = $value + $i;
@@ -116,7 +120,7 @@ class Validator
                 continue;
             }
 
-            $incr  = \str_pad($incr, 2, '0', \STR_PAD_LEFT);
+            $incr  = $this->zeroPad($incr);
             $parts = \explode(' ', \date('N m j', \strtotime("{$time[5]}-$month-$incr")));
             if ($parts[0] < 6 && $parts[1] == $month) {
                 return $time[2] == $parts[2];
@@ -136,30 +140,43 @@ class Validator
      * @param string $value
      * @param array  $time
      *
-     * @return bool|null
+     * @return bool
      */
-    public function isValidWeekDay($value, $time)
+    public function isValidWeekDay(string $value, array $time): bool
     {
-        $month = \str_pad($time[8], 2, '0', \STR_PAD_LEFT);
+        $month = $this->zeroPad($time[8]);
 
         if (\strpos($value, 'L')) {
             return $this->isLastWeekDay($value, $month, $time);
         }
 
         if (!\strpos($value, '#')) {
-            return null;
+            $this->unexpectedValue(4, $value);
         }
 
         list($day, $nth) = \explode('#', \str_replace('0#', '7#', $value));
 
-        if (!$this->isNthWeekDay($day, $nth) || $time[9] != $day) {
+        if (!$this->isNthWeekDay((int) $day, (int) $nth) || $time[9] != $day) {
             return false;
         }
 
         return \intval($time[7] / 7) == $nth - 1;
     }
 
-    protected function isLastWeekDay($value, $month, $time)
+    /**
+     * @param int    $pos
+     * @param string $value
+     *
+     * @throws \UnexpectedValueException
+     */
+    public function unexpectedValue(int $pos, string $value)
+    {
+        throw new \UnexpectedValueException(
+            \sprintf('Invalid offset value at segment #%d: %s', $pos, $value)
+        );
+    }
+
+    protected function isLastWeekDay(string $value, string $month, array $time): bool
     {
         $value = \explode('L', \str_replace('7L', '0L', $value));
         $decr  = $time[6];
@@ -174,8 +191,13 @@ class Validator
         return false;
     }
 
-    protected function isNthWeekDay($day, $nth)
+    protected function isNthWeekDay(int $day, int $nth): bool
     {
         return !($day < 0 || $day > 7 || $nth < 1 || $nth > 5);
+    }
+
+    protected function zeroPad($value): string
+    {
+        return \str_pad((string) $value, 2, '0', \STR_PAD_LEFT);
     }
 }

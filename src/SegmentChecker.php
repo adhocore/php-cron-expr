@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the PHP-CRON-EXPR package.
  *
@@ -37,19 +39,12 @@ class SegmentChecker
      *
      * @return bool
      */
-    public function checkDue($segment, $pos, $times)
+    public function checkDue(string $segment, int $pos, array $times): bool
     {
-        $isDue   = true;
         $offsets = \explode(',', \trim($segment));
 
         foreach ($offsets as $offset) {
-            if (null === $isDue = $this->isOffsetDue($offset, $pos, $times)) {
-                throw new \UnexpectedValueException(
-                    sprintf('Invalid offset value at segment #%d: %s', $pos, $offset)
-                );
-            }
-
-            if ($isDue) {
+            if ($this->isOffsetDue($offset, $pos, $times)) {
                 return true;
             }
         }
@@ -64,9 +59,9 @@ class SegmentChecker
      * @param int    $pos
      * @param array  $times
      *
-     * @return bool|null
+     * @return bool
      */
-    protected function isOffsetDue($offset, $pos, $times)
+    protected function isOffsetDue(string $offset, int $pos, array $times): bool
     {
         if (\strpos($offset, '/') !== false) {
             return $this->validator->inStep($times[$pos], $offset);
@@ -83,7 +78,7 @@ class SegmentChecker
         return $this->checkModifier($offset, $pos, $times);
     }
 
-    protected function checkModifier($offset, $pos, $times)
+    protected function checkModifier(string $offset, int $pos, array $times): bool
     {
         $isModifier = \strpbrk($offset, 'LCW#');
 
@@ -95,6 +90,6 @@ class SegmentChecker
             return $this->validator->isValidWeekDay($offset, $times);
         }
 
-        return null;
+        $this->validator->unexpectedValue($pos, $offset);
     }
 }
