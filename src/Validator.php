@@ -151,7 +151,7 @@ class Validator
         }
 
         if (!\strpos($value, '#')) {
-            $this->unexpectedValue(4, $value);;
+            $this->unexpectedValue(4, $value);
         }
 
         list($day, $nth) = \explode('#', \str_replace('0#', '7#', $value));
@@ -164,8 +164,8 @@ class Validator
     }
 
     /**
-     * @param  int    $pos
-     * @param  string $value
+     * @param int    $pos
+     * @param string $value
      *
      * @throws \UnexpectedValueException
      */
