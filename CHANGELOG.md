@@ -1,3 +1,18 @@
+## [1.0.0](https://github.com/adhocore/php-cron-expr/releases/tag/1.0.0) (2019-12-22)
+
+### Internal Refactors
+- Strict php7 typehints (Jitendra Adhikari) [_e0967be_](https://github.com/adhocore/php-cron-expr/commit/e0967be)
+
+### Miscellaneous
+- Add composer script (Jitendra Adhikari) [_594e7e1_](https://github.com/adhocore/php-cron-expr/commit/594e7e1)
+
+### Documentations
+- Update for v1.0 (Jitendra Adhikari) [_7224037_](https://github.com/adhocore/php-cron-expr/commit/7224037)
+
+### Builds
+- **Travis**: Php7 only (Jitendra Adhikari) [_b0170db_](https://github.com/adhocore/php-cron-expr/commit/b0170db)
+
+
 ## [v0.1.0](https://github.com/adhocore/php-cron-expr/releases/tag/v0.1.0) (2019-09-22)
 
 ### Documentations
