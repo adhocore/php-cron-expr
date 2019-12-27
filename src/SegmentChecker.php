@@ -22,6 +22,9 @@ namespace Ahc\Cron;
  */
 class SegmentChecker
 {
+    /** @var ReferenceTime */
+    protected $reference;
+
     /** @var Validator */
     protected $validator;
 
@@ -30,21 +33,25 @@ class SegmentChecker
         $this->validator = $validator ?: new Validator;
     }
 
+    public function setReference(ReferenceTime $reference)
+    {
+        $this->reference = $reference;
+    }
+
     /**
      * Checks if a cron segment satisfies given time.
      *
      * @param string $segment
      * @param int    $pos
-     * @param array  $times
      *
      * @return bool
      */
-    public function checkDue(string $segment, int $pos, array $times): bool
+    public function checkDue(string $segment, int $pos): bool
     {
         $offsets = \explode(',', \trim($segment));
 
         foreach ($offsets as $offset) {
-            if ($this->isOffsetDue($offset, $pos, $times)) {
+            if ($this->isOffsetDue($offset, $pos)) {
                 return true;
             }
         }
@@ -57,39 +64,41 @@ class SegmentChecker
      *
      * @param string $offset
      * @param int    $pos
-     * @param array  $times
      *
      * @return bool
      */
-    protected function isOffsetDue(string $offset, int $pos, array $times): bool
+    protected function isOffsetDue(string $offset, int $pos): bool
     {
         if (\strpos($offset, '/') !== false) {
-            return $this->validator->inStep($times[$pos], $offset);
+            return $this->validator->inStep($this->reference->get($pos), $offset);
         }
 
         if (\strpos($offset, '-') !== false) {
-            return $this->validator->inRange($times[$pos], $offset);
+            return $this->validator->inRange($this->reference->get($pos), $offset);
         }
 
         if (\is_numeric($offset)) {
-            return $times[$pos] == $offset;
+            return $this->reference->isAt($offset, $pos);
         }
 
-        return $this->checkModifier($offset, $pos, $times);
+        return $this->checkModifier($offset, $pos);
     }
 
-    protected function checkModifier(string $offset, int $pos, array $times): bool
+    protected function checkModifier(string $offset, int $pos): bool
     {
         $isModifier = \strpbrk($offset, 'LCW#');
 
-        if ($pos === 2 && $isModifier) {
-            return $this->validator->isValidMonthDay($offset, $times);
+        if ($pos === ReferenceTime::MONTHDAY && $isModifier) {
+            return $this->validator->isValidMonthDay($offset, $this->reference);
         }
 
-        if ($pos === 4 && $isModifier) {
-            return $this->validator->isValidWeekDay($offset, $times);
+        if ($pos === ReferenceTime::WEEKDAY && $isModifier) {
+            return $this->validator->isValidWeekDay($offset, $this->reference);
         }
 
         $this->validator->unexpectedValue($pos, $offset);
+        // @codeCoverageIgnoreStart
     }
+
+    // @codeCoverageIgnoreEnd
 }

@@ -91,39 +91,42 @@ class Validator
      *
      * @internal
      *
-     * @param string $value
-     * @param array  $time
+     * @param string        $value
+     * @param ReferenceTime $time
      *
      * @return bool
      */
-    public function isValidMonthDay(string $value, array $time): bool
+    public function isValidMonthDay(string $value, ReferenceTime $reference): bool
     {
         if ($value == 'L') {
-            return $time[2] == $time[6];
+            return $reference->monthDay() == $reference->numDays();
         }
 
         if ($pos = \strpos($value, 'W')) {
             $value = \substr($value, 0, $pos);
-            $month = $this->zeroPad($time[8]);
+            $month = $this->zeroPad($reference->month());
 
-            return $this->isClosestWeekDay((int) $value, $month, $time);
+            return $this->isClosestWeekDay((int) $value, $month, $reference);
         }
 
         $this->unexpectedValue(2, $value);
+        // @codeCoverageIgnoreStart
     }
 
-    protected function isClosestWeekDay(int $value, string $month, array $time): bool
+    // @codeCoverageIgnoreEnd
+
+    protected function isClosestWeekDay(int $value, string $month, ReferenceTime $reference): bool
     {
         foreach ([0, -1, 1, -2, 2] as $i) {
             $incr = $value + $i;
-            if ($incr < 1 || $incr > $time[6]) {
+            if ($incr < 1 || $incr > $reference->numDays()) {
                 continue;
             }
 
             $incr  = $this->zeroPad($incr);
-            $parts = \explode(' ', \date('N m j', \strtotime("{$time[5]}-$month-$incr")));
+            $parts = \explode(' ', \date('N m j', \strtotime("{$reference->year()}-$month-$incr")));
             if ($parts[0] < 6 && $parts[1] == $month) {
-                return $time[2] == $parts[2];
+                return $reference->monthDay() == $parts[2];
             }
         }
 
@@ -137,17 +140,17 @@ class Validator
      *
      * @internal
      *
-     * @param string $value
-     * @param array  $time
+     * @param string        $value
+     * @param ReferenceTime $time
      *
      * @return bool
      */
-    public function isValidWeekDay(string $value, array $time): bool
+    public function isValidWeekDay(string $value, ReferenceTime $reference): bool
     {
-        $month = $this->zeroPad($time[8]);
+        $month = $this->zeroPad($reference->month());
 
         if (\strpos($value, 'L')) {
-            return $this->isLastWeekDay($value, $month, $time);
+            return $this->isLastWeekDay($value, $month, $reference);
         }
 
         if (!\strpos($value, '#')) {
@@ -156,11 +159,11 @@ class Validator
 
         list($day, $nth) = \explode('#', \str_replace('0#', '7#', $value));
 
-        if (!$this->isNthWeekDay((int) $day, (int) $nth) || $time[9] != $day) {
+        if (!$this->isNthWeekDay((int) $day, (int) $nth) || $reference->weekDay1() != $day) {
             return false;
         }
 
-        return \intval($time[7] / 7) == $nth - 1;
+        return \intval($reference->day() / 7) == $nth - 1;
     }
 
     /**
@@ -176,15 +179,15 @@ class Validator
         );
     }
 
-    protected function isLastWeekDay(string $value, string $month, array $time): bool
+    protected function isLastWeekDay(string $value, string $month, ReferenceTime $reference): bool
     {
+        $decr  = $reference->numDays();
         $value = \explode('L', \str_replace('7L', '0L', $value));
-        $decr  = $time[6];
 
         for ($i = 0; $i < 7; $i++) {
             $decr -= $i;
-            if (\date('w', \strtotime("{$time[5]}-$month-$decr")) == $value[0]) {
-                return $time[2] == $decr;
+            if (\date('w', \strtotime("{$reference->year()}-$month-$decr")) == $value[0]) {
+                return $reference->monthDay() == $decr;
             }
         }
 
