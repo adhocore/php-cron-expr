@@ -121,14 +121,14 @@ class Expression
      */
     public function isCronDue(string $expr, $time = null): bool
     {
-        list($expr, $times) = $this->process($expr, $time);
+        $this->checker->setReference(new ReferenceTime($time));
 
-        foreach ($expr as $pos => $segment) {
+        foreach (\explode(' ', $this->normalizeExpr($expr)) as $pos => $segment) {
             if ($segment === '*' || $segment === '?') {
                 continue;
             }
 
-            if (!$this->checker->checkDue($segment, $pos, $times)) {
+            if (!$this->checker->checkDue($segment, $pos)) {
                 return false;
             }
         }
@@ -147,7 +147,6 @@ class Expression
     public function filter(array $jobs, $time = null): array
     {
         $dues = $cache = [];
-        $time = $this->normalizeTime($time);
 
         foreach ($jobs as $name => $expr) {
             $expr = $this->normalizeExpr($expr);
@@ -164,44 +163,6 @@ class Expression
         return $dues;
     }
 
-    /**
-     * Process and prepare input.
-     *
-     * @param string $expr
-     * @param mixed  $time
-     *
-     * @return array [expr, time]
-     */
-    protected function process(string $expr, $time): array
-    {
-        $expr = $this->normalizeExpr($expr);
-        $expr = \preg_split('~\s+~', $expr); // 14
-
-        if (\count($expr) < 5 || \count($expr) > 6) {
-            throw new \UnexpectedValueException(
-                'Cron $expr should have 5 or 6 segments delimited by space'
-            );
-        }
-
-        $time  = static::normalizeTime($time);
-        $times = \array_map('intval', \explode(' ', \date('i G j n w Y t d m N', $time)));
-
-        return [$expr, $times];
-    }
-
-    protected function normalizeTime($time): int
-    {
-        if (empty($time)) {
-            $time = \time();
-        } elseif (\is_string($time)) {
-            $time = \strtotime($time);
-        } elseif ($time instanceof \DateTime) {
-            $time = $time->getTimestamp();
-        }
-
-        return $time;
-    }
-
     protected function normalizeExpr(string $expr): string
     {
         $expr = \trim($expr);
@@ -210,10 +171,15 @@ class Expression
             return static::$expressions[$expr];
         }
 
-        return \str_ireplace(
-            \array_keys(static::$literals),
-            \array_values(static::$literals),
-            $expr
-        );
+        $expr  = \preg_replace('~\s+~', ' ', \strtr($expr, static::$literals));
+        $count = \substr_count($expr, ' ');
+
+        if ($count < 4 || $count > 5) {
+            throw new \UnexpectedValueException(
+                'Cron $expr should have 5 or 6 segments delimited by space'
+            );
+        }
+
+        return $expr;
     }
 }
