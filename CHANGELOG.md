@@ -1,3 +1,25 @@
+## [1.1.0](https://github.com/adhocore/php-cron-expr/releases/tag/1.1.0) (2019-12-27)
+
+### Features
+- Add ref time class (Jitendra Adhikari) [_2ad504b_](https://github.com/adhocore/php-cron-expr/commit/2ad504b)
+
+### Bug Fixes
+- **Expr**: Replace literals case insensitive (Jitendra Adhikari) [_a5c179f_](https://github.com/adhocore/php-cron-expr/commit/a5c179f)
+
+### Internal Refactors
+- **Validator**: Use reference time class (Jitendra Adhikari) [_05f139d_](https://github.com/adhocore/php-cron-expr/commit/05f139d)
+- **Checker**: Use reference time class (Jitendra Adhikari) [_7b4138f_](https://github.com/adhocore/php-cron-expr/commit/7b4138f)
+- **Expr**: Use reference time class, cleanup process() (Jitendra Adhikari) [_1ce873d_](https://github.com/adhocore/php-cron-expr/commit/1ce873d)
+
+### Miscellaneous
+- **Reftime**: Add method annot for magic calls (Jitendra Adhikari) [_96b78d1_](https://github.com/adhocore/php-cron-expr/commit/96b78d1)
+- Ignore coverage xml (Jitendra Adhikari) [_2a9505a_](https://github.com/adhocore/php-cron-expr/commit/2a9505a)
+- **Composer**: Bump deps version, fix test:cov (Jitendra Adhikari) [_14e9117_](https://github.com/adhocore/php-cron-expr/commit/14e9117)
+
+### Documentations
+- About cron (Jitendra Adhikari) [_a3760f8_](https://github.com/adhocore/php-cron-expr/commit/a3760f8)
+
+
 ## [1.0.0](https://github.com/adhocore/php-cron-expr/releases/tag/1.0.0) (2019-12-22)
 
 ### Internal Refactors
