@@ -171,7 +171,7 @@ class Expression
             return static::$expressions[$expr];
         }
 
-        $expr  = \preg_replace('~\s+~', ' ', \strtr($expr, static::$literals));
+        $expr  = \preg_replace('~\s+~', ' ', $expr);
         $count = \substr_count($expr, ' ');
 
         if ($count < 4 || $count > 5) {
@@ -180,6 +180,6 @@ class Expression
             );
         }
 
-        return $expr;
+        return \str_ireplace(\array_keys(static::$literals), \array_values(static::$literals), $expr);
     }
 }
