@@ -13,6 +13,17 @@ declare(strict_types=1);
 
 namespace Ahc\Cron;
 
+/**
+ * @method int minute()
+ * @method int hour()
+ * @method int monthDay()
+ * @method int month()
+ * @method int weekDay()  0 based day of week.
+ * @method int year()
+ * @method int day()
+ * @method int weekDay1() 1 based day of week.
+ * @method int numDays()  Number of days in the month.
+ */
 class ReferenceTime
 {
     // The cron parts. (Donot change it)
