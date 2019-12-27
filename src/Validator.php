@@ -91,8 +91,8 @@ class Validator
      *
      * @internal
      *
-     * @param string $value
-     * @param ReferenceTime  $time
+     * @param string        $value
+     * @param ReferenceTime $time
      *
      * @return bool
      */
@@ -112,6 +112,7 @@ class Validator
         $this->unexpectedValue(2, $value);
         // @codeCoverageIgnoreStart
     }
+
     // @codeCoverageIgnoreEnd
 
     protected function isClosestWeekDay(int $value, string $month, ReferenceTime $reference): bool
@@ -139,8 +140,8 @@ class Validator
      *
      * @internal
      *
-     * @param string $value
-     * @param ReferenceTime  $time
+     * @param string        $value
+     * @param ReferenceTime $time
      *
      * @return bool
      */
