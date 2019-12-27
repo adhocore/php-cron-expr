@@ -98,6 +98,8 @@ class ExpressionTest extends TestCase
     {
         return [
             ['@always', time(), '', true],
+            ['* * * * * 2018', null, '', false],
+            ['* * * * * 2018', new \DateTime, '', false],
             ['@5minutes', new \DateTime('2017-05-10 02:30:00'), '', true],
             ['* * 7W * *', '2017-10-15 20:00:00', '', false],
 
