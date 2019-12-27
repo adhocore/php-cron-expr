@@ -56,13 +56,21 @@ $jobs = [
 ];
 
 // The second param $time can be used same as above: null/time()/date string/DateTime
-$dueJobs = Expression::getDues($jobs, '2015-08-10 21:50:00');
+$dues = Expression::getDues($jobs, '2015-08-10 21:50:00');
 // ['job1', 'job4', 'job5']
 
 // Dont like static calls? Below is possible too!
 $expr = new Expression;
-$dueJobs = $expr->filter($jobs, time());
+$dues = $expr->filter($jobs, time());
 ```
+
+### Cron Expression
+
+Cron expression normally consists of 5 segments viz:
+```
+<minute> <hour> <day> <month> <weekday>
+```
+and sometimes there can be 6th segment for `<year>` at the end.
 
 ### Real Abbreviations
 
@@ -88,11 +96,11 @@ Following tags are available and they are converted to real cron expressions bef
 Following modifiers supported
 
 - *Day of Month / 3rd segment:*
-	- `L` stands for last day of month (eg: `L` could mean 29th for February in leap year)
-	- `W` stands for closest week day (eg: `10W` is closest week days (MON-FRI) to 10th date)
+    - `L` stands for last day of month (eg: `L` could mean 29th for February in leap year)
+    - `W` stands for closest week day (eg: `10W` is closest week days (MON-FRI) to 10th date)
 - *Day of Week / 5th segment:*
-	- `L` stands for last weekday of month (eg: `2L` is last monday)
-	- `#` stands for nth day of week in the month (eg: `1#2` is second sunday)
+    - `L` stands for last weekday of month (eg: `2L` is last monday)
+    - `#` stands for nth day of week in the month (eg: `1#2` is second sunday)
 
 ## LICENSE
 
