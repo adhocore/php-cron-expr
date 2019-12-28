@@ -9,8 +9,9 @@
 
 
 - Lightweight Cron expression parser library for PHP.
+- Zero dependency.
 - Very **fast** because it bails early in case a segment doesnt match.
-- Real [benchmark](https://github.com/adhocore/php-cron-bench) shows it is about 9.64x to 10.57x faster than `dragonmantank/cron-expression`
+- Real [benchmark](https://github.com/adhocore/php-cron-bench) shows it is about 7.54x to 12.92x faster than `dragonmantank/cron-expression`
 
 ## Installation
 
