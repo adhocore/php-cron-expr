@@ -1,3 +1,14 @@
+## [1.1.1](https://github.com/adhocore/php-cron-expr/releases/tag/1.1.1) (2020-01-09)
+
+### Miscellaneous
+- **Validator**: Cleanup redundancy (Jitendra Adhikari) [_00983d4_](https://github.com/adhocore/php-cron-expr/commit/00983d4)
+- **Travis**: Script (Jitendra Adhikari) [_fec5332_](https://github.com/adhocore/php-cron-expr/commit/fec5332)
+- **Composer**: Tweak script.test (Jitendra Adhikari) [_0a5b4fb_](https://github.com/adhocore/php-cron-expr/commit/0a5b4fb)
+
+### Documentations
+- Update benchmark (Jitendra Adhikari) [_fe9dffd_](https://github.com/adhocore/php-cron-expr/commit/fe9dffd)
+
+
 ## [1.1.0](https://github.com/adhocore/php-cron-expr/releases/tag/1.1.0) (2019-12-27)
 
 ### Features
