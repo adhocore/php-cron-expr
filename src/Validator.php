@@ -57,7 +57,6 @@ class Validator
             return $value % $parts[1] === 0;
         }
 
-        $parts    = \explode('/', $offset, 2);
         $subparts = \explode('-', $parts[0], 2) + [1 => $value];
 
         return $this->inStepRange((int) $value, (int) $subparts[0], (int) $subparts[1], (int) $parts[1]);
