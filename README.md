@@ -28,9 +28,10 @@ composer require adhocore/cron-expr:0.1.0
 
 ```php
 use Ahc\Cron\Expression;
+use Ahc\Cron\Normalizer;
 
 Expression::isDue('@always');
-Expression::isDue('@hourly', '2015-01-01 00:00:00');
+Expression::isDue(Normalizer::HOURLY, '2015-01-01 00:00:00');
 Expression::isDue('*/20 * * * *', new DateTime);
 Expression::isDue('5-34/4 * * * *', time());
 
@@ -91,6 +92,8 @@ Following tags are available and they are converted to real cron expressions bef
 - *@15minutes* - every 15 minutes
 - *@30minutes* - every 30 minutes
 - *@always* - every minute
+
+> You can refer them with constants from `Ahc\Cron\Normalizer` like `Ahc\Cron\Normalizer::WEEKLY`
 
 ### Modifiers
 
