@@ -29,45 +29,13 @@ class Expression
     /** @var SegmentChecker */
     protected $checker;
 
-    protected static $expressions = [
-        '@yearly'    => '0 0 1 1 *',
-        '@annually'  => '0 0 1 1 *',
-        '@monthly'   => '0 0 1 * *',
-        '@weekly'    => '0 0 * * 0',
-        '@daily'     => '0 0 * * *',
-        '@hourly'    => '0 * * * *',
-        '@always'    => '* * * * *',
-        '@5minutes'  => '*/5 * * * *',
-        '@10minutes' => '*/10 * * * *',
-        '@15minutes' => '*/15 * * * *',
-        '@30minutes' => '0,30 * * * *',
-    ];
+    /** @var Normalizer */
+    protected $normalizer;
 
-    protected static $literals = [
-        'sun' => 0,
-        'mon' => 1,
-        'tue' => 2,
-        'wed' => 3,
-        'thu' => 4,
-        'fri' => 5,
-        'sat' => 6,
-        'jan' => 1,
-        'feb' => 2,
-        'mar' => 3,
-        'apr' => 4,
-        'may' => 5,
-        'jun' => 6,
-        'jul' => 7,
-        'aug' => 8,
-        'sep' => 9,
-        'oct' => 10,
-        'nov' => 11,
-        'dec' => 12,
-    ];
-
-    public function __construct(SegmentChecker $checker = null)
+    public function __construct(SegmentChecker $checker = null, Normalizer $normalizer = null)
     {
-        $this->checker = $checker ?: new SegmentChecker;
+        $this->checker    = $checker ?: new SegmentChecker;
+        $this->normalizer = $normalizer ?: new Normalizer;
 
         if (null === static::$instance) {
             static::$instance = $this;
@@ -123,7 +91,7 @@ class Expression
     {
         $this->checker->setReference(new ReferenceTime($time));
 
-        foreach (\explode(' ', $this->normalizeExpr($expr)) as $pos => $segment) {
+        foreach (\explode(' ', $this->normalizer->normalizeExpr($expr)) as $pos => $segment) {
             if ($segment === '*' || $segment === '?') {
                 continue;
             }
@@ -149,7 +117,7 @@ class Expression
         $dues = $cache = [];
 
         foreach ($jobs as $name => $expr) {
-            $expr = $this->normalizeExpr($expr);
+            $expr = $this->normalizer->normalizeExpr($expr);
 
             if (!isset($cache[$expr])) {
                 $cache[$expr] = $this->isCronDue($expr, $time);
@@ -161,25 +129,5 @@ class Expression
         }
 
         return $dues;
-    }
-
-    protected function normalizeExpr(string $expr): string
-    {
-        $expr = \trim($expr);
-
-        if (isset(static::$expressions[$expr])) {
-            return static::$expressions[$expr];
-        }
-
-        $expr  = \preg_replace('~\s+~', ' ', $expr);
-        $count = \substr_count($expr, ' ');
-
-        if ($count < 4 || $count > 5) {
-            throw new \UnexpectedValueException(
-                'Cron $expr should have 5 or 6 segments delimited by space'
-            );
-        }
-
-        return \str_ireplace(\array_keys(static::$literals), \array_values(static::$literals), $expr);
     }
 }
