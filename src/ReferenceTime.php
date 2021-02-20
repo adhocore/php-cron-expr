@@ -70,7 +70,7 @@ class ReferenceTime
         return $this->values[$segment];
     }
 
-    public function isAt($value, $segment): bool
+    public function isAt($value, int $segment): bool
     {
         return $this->values[$segment] == $value;
     }
