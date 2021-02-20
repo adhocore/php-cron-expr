@@ -1,3 +1,15 @@
+## [1.1.2](https://github.com/adhocore/php-cron-expr/releases/tag/1.1.2) (2021-02-20)
+
+### Features
+- Add expression normalizer (Jitendra Adhikari) [_afb57c4_](https://github.com/adhocore/php-cron-expr/commit/afb57c4)
+
+### Internal Refactors
+- Use Normalizer instead (Jitendra Adhikari) [_42700ab_](https://github.com/adhocore/php-cron-expr/commit/42700ab)
+
+### Documentations
+- Tags as constants (Jitendra Adhikari) [_1382d7d_](https://github.com/adhocore/php-cron-expr/commit/1382d7d)
+
+
 ## [1.1.1](https://github.com/adhocore/php-cron-expr/releases/tag/1.1.1) (2020-01-09)
 
 ### Miscellaneous
