@@ -6,6 +6,8 @@
 [![Codecov branch](https://img.shields.io/codecov/c/github/adhocore/php-cron-expr/master.svg?style=flat-square)](https://codecov.io/gh/adhocore/php-cron-expr)
 [![StyleCI](https://styleci.io/repos/94228363/shield)](https://styleci.io/repos/94228363)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Donate](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square)](https://www.paypal.me/ji10/50usd)
+[![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Lightweight+and+fast+cron+expression+parser+for+PHP&url=https://github.com/adhocore/php-cron-expr&hashtags=php,cron,cronparser,parser,cronexpr)
 
 
 - Lightweight Cron expression parser library for PHP.
