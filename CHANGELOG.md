@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/adhocore/php-cron-expr/releases/tag/1.1.3) (2021-10-20)
+
+### Bug Fixes
+- **Validator**: Strict checks for in-step, handle weekends correctly (Jitendra Adhikari) [_b894e4e_](https://github.com/adhocore/php-cron-expr/commit/b894e4e)
+- **Normalizer**: Expr maybe lowercased (Jitendra Adhikari) [_e6c11df_](https://github.com/adhocore/php-cron-expr/commit/e6c11df)
+
+
 ## [1.1.2](https://github.com/adhocore/php-cron-expr/releases/tag/1.1.2) (2021-02-20)
 
 ### Features
