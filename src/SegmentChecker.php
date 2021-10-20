@@ -99,6 +99,5 @@ class SegmentChecker
         $this->validator->unexpectedValue($pos, $offset);
         // @codeCoverageIgnoreStart
     }
-
     // @codeCoverageIgnoreEnd
 }

@@ -53,7 +53,7 @@ class Validator
             return false;
         }
 
-        if (\strpos($offset, '*/') !== false || \strpos($offset, '0/') !== false) {
+        if (\strpos($offset, '*/') === 0 || \strpos($offset, '0/') === 0) {
             return $value % $parts[1] === 0;
         }
 
@@ -91,7 +91,7 @@ class Validator
      * @internal
      *
      * @param string        $value
-     * @param ReferenceTime $time
+     * @param ReferenceTime $reference
      *
      * @return bool
      */
@@ -140,7 +140,7 @@ class Validator
      * @internal
      *
      * @param string        $value
-     * @param ReferenceTime $time
+     * @param ReferenceTime $reference
      *
      * @return bool
      */
@@ -156,9 +156,9 @@ class Validator
             $this->unexpectedValue(4, $value);
         }
 
-        list($day, $nth) = \explode('#', \str_replace('0#', '7#', $value));
+        list($day, $nth) = \explode('#', \str_replace('7#', '0#', $value));
 
-        if (!$this->isNthWeekDay((int) $day, (int) $nth) || $reference->weekDay1() != $day) {
+        if (!$this->isNthWeekDay((int) $day, (int) $nth) || $reference->weekDay() != $day) {
             return false;
         }
 
@@ -166,6 +166,8 @@ class Validator
     }
 
     /**
+     * Throws UnexpectedValueException.
+     *
      * @param int    $pos
      * @param string $value
      *
