@@ -167,7 +167,7 @@ class Validator
 
     /**
      * Throws UnexpectedValueException.
-     * 
+     *
      * @param int    $pos
      * @param string $value
      *
