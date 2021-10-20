@@ -68,8 +68,8 @@ class Normalizer
     {
         $expr = \trim($expr);
 
-        if (isset(static::$expressions[$expr])) {
-            return static::$expressions[$expr];
+        if (isset(static::$expressions[$exp = \strtolower($expr)])) {
+            return static::$expressions[$exp];
         }
 
         $expr  = \preg_replace('~\s+~', ' ', $expr);
