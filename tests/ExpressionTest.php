@@ -175,6 +175,19 @@ class ExpressionTest extends TestCase
             ['5/20 * * * *', '2018-08-13 00:24:00', '2011-07-27 00:00:00', false],                // issue #12
             ['5/20 * * * *', strtotime('2018-08-13 00:45:00'), '2011-07-27 00:00:00', true],      // issue #12
             ['5-11/4 * * * *', strtotime('2018-08-13 00:03:00'), '2011-07-27 00:00:00', false],
+
+            // New from https://github.com/dragonmantank/cron-expression
+            ['0 0 L * 0', strtotime('2011-06-15 23:09:00'), '2011-06-19 00:00:00', false],
+            ['3-59/15 6-12 */15 1 2-5', strtotime('2017-01-08 00:00:00'), '2017-01-10 06:03:00', false],
+            ['* * * * MON-FRI', strtotime('2017-01-08 00:00:00'), strtotime('2017-01-09 00:00:00'), false],
+            ['* * * * TUE', strtotime('2017-01-08 00:00:00'), strtotime('2017-01-10 00:00:00'), false],
+            ['0 1 15 JUL mon,Wed,FRi', strtotime('2019-11-14 00:00:00'), strtotime('2020-07-01 01:00:00'), false],
+            ['0 1 15 jul mon,Wed,FRi', strtotime('2019-11-14 00:00:00'), strtotime('2020-07-01 01:00:00'), false],
+            ['@weekly', strtotime('2019-11-14 00:00:00'), strtotime('2019-11-17 00:00:00'), false],
+            ['@weekly', strtotime('2019-11-14 00:00:00'), strtotime('2019-11-17 00:00:00'), false],
+            ['@weekly', strtotime('2019-11-14 00:00:00'), strtotime('2019-11-17 00:00:00'), false],
+            ['0 12 * * ?', strtotime('2020-08-20 00:00:00'), strtotime('2020-08-20 12:00:00'), false],
+            ['0 12 ? * *', strtotime('2020-08-20 00:00:00'), strtotime('2020-08-20 12:00:00'), false],
         ];
     }
 }
