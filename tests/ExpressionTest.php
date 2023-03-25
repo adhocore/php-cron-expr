@@ -28,6 +28,7 @@ class ExpressionTest extends TestCase
 
     /**
      * @dataProvider invalidScheduleProvider
+     *
      * @expectedException \UnexpectedValueException
      */
     public function test_isDue_on_invalid_expression($expr, $time, $foo, $expected, $throwsAt = false)
